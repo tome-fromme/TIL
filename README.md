@@ -33,6 +33,7 @@ https://godekdls.github.io/Spring%20Security/integrations/
 
 - [ ] 8.3 Spring Boot Auto configuration
 #### 9. Servlet Security: The Big Picture
+> - (인우 발표)  
 > - [ ] 9.1 A Reaview of Filters
 > - [ ] 9.2 DelegatingFilterProxy
 > - [ ] 9.3 FilterChainProxy
@@ -40,6 +41,7 @@ https://godekdls.github.io/Spring%20Security/integrations/
 > - [ ] 9.5 Security Filters
 > - [ ] 9.6 Handling Security Exceptions
 #### 10. Authentication
+> - (혜찬 발표)  
 > - [ ] 10.1 SecurityContextHolder
 > - [ ] 10.2 SecurityContext
 > - [ ] 10.3 Authentiation
@@ -50,6 +52,7 @@ https://godekdls.github.io/Spring%20Security/integrations/
 > - [ ] 10.8 Request Credentials with AuthenticationEntryPoint
 > - [ ] 10.9 AbstractAuthenticationProcessingFilter
 
+> - (혜린 발표)  
 > - [ ] 10.10 Username/Password Authentication
 > - [ ] 10.11 Session Management
 > - [ ] 10.12 Remember-Me Authentication
