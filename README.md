@@ -14,17 +14,17 @@ https://godekdls.github.io/Spring%20Security/integrations/
 ## 학습할 목차
 ### preface
 ---
+- (각자학습)
+- [x] 1. Prerequisites
+- [x] 2. Spring Security Community
+- [x] 3.2 What's New in Spring security 5.3(Servlet)
+- [x] 4.3.1 Getting Spring Security(Spring Boot with Gradle)
 
-- [ ] 1. Prerequisites
-- [ ] 2. Spring Security Community
-- [ ] 3.2 What's New in Spring security 5.3(Servlet)
-- [ ] 4.3.1 Getting Spring Security(Spring Boot with Gradle)
+> - [x] **5.1 Authentication**
 
-> - [ ] **5.1 Authentication**
+> - [x] **5.2 Protection Against Exploits**
 
-> - [ ] **5.2 Protection Against Exploits**
-
-> - [ ] **6. Project Modules (모듈 종류 훑기)**. 
+> - [x] **6. Project Modules (모듈 종류 훑기)**. 
 ~~7. Samples~~. 
 
 
