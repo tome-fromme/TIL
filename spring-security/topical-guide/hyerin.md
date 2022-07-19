@@ -47,7 +47,9 @@ public interface AuthenticationProvider {
 
 }
 ```
-- Class<?> 아큐먼트는 실제로는 Class<? extends Authentication>
+- Class<?> 는 실제로는 Class<? extends Authentication>
 - authenticate() 메소드에 전달될 어떤 것을 지원하는지 여부를 물음
 - ProviderManager는 일련의 AuthenticationProvider들에게 위힘함으로써 동일 어플리케이션 내에서 여러 다른 인증 메커니즘을 제공
 - ProviderManager가 특정 인증 유형을 인식하지 못한다면 그 인증은 그냥 스킵됨
+
+<img src="https://t1.daumcdn.net/cfile/tistory/2206624D5935160D2C">
