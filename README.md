@@ -1,5 +1,4 @@
-# TIL-springSecurity
-Today I learned spring security
+# Spring Security
 
 - v5.3.2.RELEASE
 
