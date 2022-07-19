@@ -17,17 +17,17 @@
 ## 인증(Authentication)
 - AuthenticationManager: 인증에 대한 주요 전략 인터페이스로 authenticate() 메소드 단 한개만 가지고 있음
 ```
-    public interface AuthenticationManager {
+public interface AuthenticationManager {
 
-      Authentication authenticate(Authentication authentication)
-        throws AuthenticationException;
+  Authentication authenticate(Authentication authentication)
+    throws AuthenticationException;
 
-    }
+}
 ```
 
-    - authenticate()
-        1) 유효한 principal이면 Authentication을 리턴
-        2) 유효하지 않으면 AuthenticationException을 throw
-            - AuthenticationException은 런타임 예외
-            - 이는 대개 어플리케이션의 스타일과 목적에 따라 일반적인 방법으로 핸들링될 수도 있고, 직접 예외를 catch해서 핸들링할 수 있음
-        3) 결정하지 못하면 null을 리턴
+- authenticate()
+    1) 유효한 principal이면 Authentication을 리턴
+    2) 유효하지 않으면 AuthenticationException을 throw
+        - AuthenticationException은 런타임 예외
+        - 이는 대개 어플리케이션의 스타일과 목적에 따라 일반적인 방법으로 핸들링될 수도 있고, 직접 예외를 catch해서 핸들링할 수 있음
+    3) 결정하지 못하면 null을 리턴
