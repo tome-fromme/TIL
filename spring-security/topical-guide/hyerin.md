@@ -53,3 +53,40 @@ public interface AuthenticationProvider {
 - ProviderManager가 특정 인증 유형을 인식하지 못한다면 그 인증은 그냥 스킵됨
 
 <img src="https://t1.daumcdn.net/cfile/tistory/2206624D5935160D2C">
+<img src="https://gregor77.github.io/images/spring-security/03/AuthenticationManager.png">
+
+
+## Custimizing Authentication Managers
+- 스프링 시큐리티는 일반적인 인증관리 특징들을 빠르게 설정할 수 있는 헬퍼들을 제공
+- 가장 많이 사용하는 헬퍼는 AuthenticationManagerBuilder 이고, 메모리, JDBC, LDAP 사용자 정보를 셋팅하고 커스텀 UserDetailService를 추가할 수 있음
+```
+@Configuration
+public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+
+   ... // web stuff here
+
+  @Autowired
+  public initialize(AuthenticationManagerBuilder builder, DataSource dataSource) {
+    builder.jdbcAuthentication().dataSource(dataSource).withUser("dave")
+      .password("secret").roles("USER");
+  }
+
+}
+```
+```
+@Configuration
+public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+
+  @Autowired
+  DataSource dataSource;
+
+   ... // web stuff here
+
+  @Override
+  public configure(AuthenticationManagerBuilder builder) {
+    builder.jdbcAuthentication().dataSource(dataSource).withUser("dave")
+      .password("secret").roles("USER");
+  }
+
+}
+```
