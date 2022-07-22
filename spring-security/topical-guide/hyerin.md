@@ -168,7 +168,67 @@ public interface AccessDecisionVoter<S> {
    boolean supports(Class<?> clazz);
 }
 ```
+
 - AccessDecisionVoter를 보면 AccessDecisionManager가 권한심사를 맡기는데 vote라는 메소드에도 authentication(인증정보), object(요청정보), configAttributes(권한정보) 들을 파라미터로 받고 있음
 - 실질적인 권함심사를 한다고 보면됨
 
 ## Web Security
+- 웹 티어에서의 스프링 시큐리티는 서블릿 필터에 기반
+- 클라이언트가 요청을 보내면 컨테이너는 요청 URI의 경로에 기초해서 어떤 필터와 서블릿이 적용될지 결정
+- 하나의 서블릿이 하나의 요청을 처리하지만, 필터들은 체인을 형성하고 순서가 정해짐
+- 필터는 요청 자체를 저리하기 원한다면 체인의 나머지를 거부할 수 있음
+- 필터는 요청 또는 응답을 수정할 수 있음
+- 필터의 순서는 매우 중요
+- 스프링 부트는 두가지 메커니즘으로 이를 관리한
+	1) 필터 빈에 @Order 를 사용하거나 Ordered를 구현
+	2) API일부로써 순서를 가지는 FiterRegistraionBean의 일부가 되는 것
+
+
+
+- 스프링 시큐리티는 하나의 Filter로 설치되고, 이는 FilterChainProxy로 완성
+- 스프링 부트에서 security filter는 ApplicationContext에 잇는 @Bean 이고, 모든 요청에 대해 적용
+- SecurityProperties.DEFAULT_FILTER_ORDER로 정의된 위치에 설치되고, 이는 FilterRegistrationBean.REQUEST_WRAPPER_FILTER_MAX_ORDER에 의해 고정
+- 컨테이너에서 보면 Spring Security는 단일 필터이지만, 그 안에는 특별한 역할을 하는 추가 필터들이 있음
+<img src="https://github.com/spring-guides/top-spring-security-architecture/raw/main/images/security-filters.png">
+
+
+- 실제로 시큐리티 필터에는 간접적인 계층이 하나 더 있음
+- 일반적으로 컨테이너에는 DelegatingFilterProxy로 설치되며 Spring @Bean일 필요는 없음
+- 프록시는 항상 @Bean인 FilterChainProxy에 위임
+- 보통 springSecurityFilterChain 이라는 고정된 이름
+- FilterChainProxy는 내부적으로 필터 체인으로 정렬된 모든 보안 논리를 포함
+- 모든 필터에는 동일한 API가 있고(서블릿 스펙의 필터 인터페이스 구현), 나머지 필터는 모두 거부할 수 있음
+- 동일한 최상위 FilterChainProxy와 컨테이너에 알려지지 않은 모은 것? 에 스프링 시큐리티에 의해 관리되는 여러 개의 필터 체인이 있을 수 있음
+- 스프링 시큐리티 필터는 필터체인 목록을 포함하고, 클라이언트 요청을 그와 매치되는 첫번째 필터에 dispatch
+- 아래 그림은 요청 path 매칭에 기반한 dispatch 상황을 나타냄(/foo/** 는 /** 보다 이전에 매칭)
+- 이는 일반적인 방법이지만 요청을 매칭하는 유일한 방법은 아님
+- 이 dispatch 프로세서의 중요한 점은 요청을 처리하는 체인은 하나의 체인이라는 것
+
+<img src="https://github.com/spring-guides/top-spring-security-architecture/raw/main/images/security-filters-dispatch.png">
+
+- 스프링 시큐리티 내부의 모든 필터가 컨테이너에 알려지지 않는다는 것이 중요
+- 특히, Spring Boot 어플리케이션에서 필터 유형의 모든 @Bean은 기본적으로 컨테이너에 자동으로 등록
+- 따라서 사용자 정의 필터를 보안 체인에 추가하려면 컨테이너를 @Bean으로 만들지 않거나 FilterRegistrationBean으로 포장하여 컨테이너 등록을 명시적으로 비활성화해야 함
+
+## Creating and Customizing Filter Chains
+- 스프링 부트 애플리케이션의 기본 폴백 필터 체인(/** 요청 일치 항목이 있는 체인)에는 보안 속성의 순서가 미리 정의되어 있음
+- BASIC_AUTH_ORDER.security.basic.enabled=false를 설정하여 완전히 끌 수도 있고, 예비로 사용할 수도 있고 낮은 순서로 다른 규칙을 정의할 수도 있음
+- 후자를 수행하려면 WebSecurityConfigurerAdapter(또는 WebSecurityConfigurer) 유형의 @Bean을 추가하고 아래와 같이 클래스에 @Order를 사용
+```
+@Configuration
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 10)
+public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.antMatcher("/match1/**")
+     ...;
+  }
+}
+```
+- 이 빈은 Spring Security가 새로운 필터 체인을 추가하고 폴백 전에 정렬
+- 많은 애플리케이션은 다른 리소스와 비교하여 한 리소스 집합에 대해 완전히 다른 액세스 규칙을 가지고 있음
+- 각 리소스 집합에는 고유한 순서와 고유한 요청 일치자가 있는 고유한 WebSecurityConfigurerAdapter가 있음
+- 일치 규칙이 겹치면 가장 먼저 정렬된 필터 체인이 우선
+
+## Request Matching for Dispatch and Authorization
+
