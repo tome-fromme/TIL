@@ -231,4 +231,62 @@ public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
 - 일치 규칙이 겹치면 가장 먼저 정렬된 필터 체인이 우선
 
 ## Request Matching for Dispatch and Authorization
+- 보안 필터 체인(동일하게 WebSecurityConfigurerAdapter)은 http요청을 처리할 지를 결정하는 request matcher를 가지고 있음
+- 특정 필터 체인이 결정되면 다른 체인은 적용되지 않음
+- 하지만, 필터 체인 내에서 HttpSecurity configurer 에 추가적인 matcher를 설정하여 세분화된 권한 제어를 할 수 있음
+```
+@Configuration
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 10)
+public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.antMatcher("/match1/**")
+      .authorizeRequests()
+        .antMatchers("/match1/user").hasRole("USER")
+        .antMatchers("/match1/spam").hasRole("SPAM")
+        .anyRequest().isAuthenticated();
+  }
+}
+```
 
+## Combining Application Security Rules with Actuator Rules
+- 스프링 시큐리티 어플리케이션에 스프링 액츄에이터를 추가하면 자동으로 액츄에이터 endpoints에 추가 필터 체인이 생기며, 기본 SecurityProeprties폴백 필터보다 5 작은 순서(ManagementServerProperties.BASIC_AUTH_ORDER)로 적용되므로 폴백 전에 참조
+- 엑츄에이터 기본보안설정을 선호하는 경우는 액츄에이터보다 +1 로 순서 설정
+```
+@Configuration
+@Order(ManagementServerProperties.BASIC_AUTH_ORDER + 1)
+public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.antMatcher("/foo/**")
+     ...;
+  }
+}
+```
+- 웹 계층의 Spring Security는 현재 Servlet API에 연결되어 있으므로 임베디드든 아니든 서블릿 컨테이너에서 애플리케이션을 실행할 때만 실제로 적용할 수 있음
+- 그러나 Spring MVC나 나머지 Spring 웹 스택에 연결되어 있지 않으므로 JAX-RS를 사용하는 것과 같은 모든 서블릿 애플리케이션에서 사용할 수 있음 (????)
+
+## Method Security
+- 메소드 보안을 위해서는 먼저 아래와 같이 설정
+```
+@SpringBootApplication
+@EnableGlobalMethodSecurity(securedEnabled = true)
+public class SampleSecureApplication {
+}
+```
+- 그리고, 해당 보안 메소드에 @Secured 어노테이션을 사용한다.
+```
+@Service
+public class MyService {
+
+  @Secured("ROLE_USER")
+  public String secure() {
+    return "Hello Security";
+  }
+
+}
+```
+- caller가 권한이 없다면 AccessDeniedException 이 발생
+0 @PreAuthorize 및 @PostAuthorize 어노테이션으로 메서드 매개변수 및 반환값에 대한 참조가 포함된 식을 작성 가능
+- 웹 보안과 메소드 보안을 같이 사용하는 것이 드문 일은 아님
+- 필터 체인은 인증 및 로그인 페이지로의 리다이렉션 등과 같은 사용자 경험 기능을 제공하며, 메소드 보안은 보다 세부적인 수준의 보호기능을 제공
