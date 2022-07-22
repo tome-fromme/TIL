@@ -6,7 +6,7 @@
 https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/#integrations
 
 - Spring Security 번역 문서
-https://godekdls.github.io/Spring%20Security/integrations/
+https://godekdls.github.io/Spring%20Security/contents/
 
 - Spring Security topical guide
 https://leeyongjin.tistory.com/entry/Spring-Security-Basic
