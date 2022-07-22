@@ -287,6 +287,6 @@ public class MyService {
 }
 ```
 - caller가 권한이 없다면 AccessDeniedException 이 발생
-0 @PreAuthorize 및 @PostAuthorize 어노테이션으로 메서드 매개변수 및 반환값에 대한 참조가 포함된 식을 작성 가능
+- @PreAuthorize 및 @PostAuthorize 어노테이션으로 메서드 매개변수 및 반환값에 대한 참조가 포함된 식을 작성 가능
 - 웹 보안과 메소드 보안을 같이 사용하는 것이 드문 일은 아님
 - 필터 체인은 인증 및 로그인 페이지로의 리다이렉션 등과 같은 사용자 경험 기능을 제공하며, 메소드 보안은 보다 세부적인 수준의 보호기능을 제공
