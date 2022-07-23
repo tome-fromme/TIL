@@ -1,6 +1,6 @@
 https://www.notion.so/topical-guide-0a6b5561b8934afaa2d4ffc5eb8ce125
 
-### 인증과 접근제어
+## 인증과 접근제어
 
 Authentication(인증)
 
@@ -12,7 +12,8 @@ Authorization(인가)
 
 스프링 시큐리티는 인증과 인가가 분리되어 디자인 되어있고 각각 전략이 다르고, 각각 확장해서 쓸 수 있도록 제공한다
 
-### 인증(Authentication)
+
+## 인증(Authentication)
 
 인증과정 주요전략이 담긴 인터페이스는 AuthenticationManager이고, 메소드 단 한 개만 가지고 있다.
 
@@ -234,7 +235,7 @@ ProviderManager는 일련의 AuthenticationProvider에게 위임함으로써 동
 
 ---
 
-### Custimizing Authentication Managers
+## Custimizing Authentication Managers
 
 스프링 시큐리티는 일반적인 인증관리 특징을 빠르게 설정할 수 있게 헬퍼 제공
 AuthenticationManagerBuilder를 많이 쓰고,
@@ -281,9 +282,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 주입 받는 거 바꾼거니까 global 전역,
 오버라이딩해서 사용하는데 빈으로 관리하는 게 아니어서 다른 빈에 @Autowired로 사용할 수 없다. local 지역으로 사용.
 
-??활용??
 
-### Authentication or AccessControl
+## Authentication or AccessControl
 
 인가처리
 
@@ -333,7 +333,7 @@ ConfigAttribute는 단 하나의 메소드만을 갖고 있는 인터페이스. 
 
 만약 다른 표현식으로 범위 확장하려면 SecurityExpressionRoot 및 SecurityExpressionHandler의 커스터마이징이 필요하다
 
-### Web Security
+## Web Security
 
 시큐리티? 필터활용해서 만든거다.
 필터 Client 요청 -필터 - 필터 -필터 -서블렛
@@ -396,7 +396,7 @@ public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
 ui요청은 로그인 페이지로 리다이렉트 하는 쿠기 기반 인증처리로,
 API요청은 404 응답을 리턴하는 토큰 기반 인증처리로 만들 수도 있다
 
-### Request Matching for Dispatch and Authorization
+## Request Matching for Dispatch and Authorization
 
 보안 필터 체인(동일하게 WebSecurityConfigurererAdapter)은 http 요청을 처리할지를 결정하는 request matcher를 가지고 있다
 
@@ -417,7 +417,7 @@ public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
 }
 ```
 
-### Combining Appliation Security Rules with Actuator Roles
+## Combining Appliation Security Rules with Actuator Roles
 
 스프링 액추에이터 : 운영 중인 애플리케이션 HTTP나 JMX를 이용해서 모니터링하고 관리할 수 있게 기능을 제공한다
 
@@ -428,7 +428,7 @@ public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
 @Order(ManagementServerProperties.BASIC_AUTH_ORDER + 1)
 
-### Method Security
+## Method Security
 
 메서드에도 보안 줄 수 있다.
 
@@ -458,7 +458,7 @@ public class MyService {
 
 도 사용할 수 있다
 
-### Working With Threads
+## Working With Threads
 
 스프링 시큐리티는 근본적으로 thread bound이다
 
@@ -468,7 +468,7 @@ public class MyService {
 
 무수한 HTTP 요청으로 쓰레드가 여러 개 생겨도 ContextHolder에서 꺼낸 인증정보들이 고이지 않게 된다
 
-### Processing Secure Methods Asynchronously
+## Processing Secure Methods Asynchronously
 
 SecurityContext는 쓰레드 바운드이므로
 
