@@ -153,7 +153,7 @@ public void decide(Authentication authentication, Object object, Collection<Conf
 	- ConsensusBased: 다수결
 	- UnanimousBased: 만장일치
 - 모든 Voter가 허용하지 않는다면 예외를 발생
-- vote()는 소스에 정의된 1, 0, -1 값을 반환하며, 각각은 승인, 거부, 보류를 나타냄
+- vote()는 소스에 정의된 1, 0, -1 값을 반환하며, 각각은 승인, 보류, 거부를 나타냄
 - 승인 결정에 대한 의견이 없는 경우 ACCESS_ABSTAIN, 승인인 경우는 ACCESS_DENIED를 거부일 경우는 ACCESS_GRANTED를 반환
 
 ```
@@ -274,7 +274,7 @@ public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
 public class SampleSecureApplication {
 }
 ```
-- 그리고, 해당 보안 메소드에 @Secured 어노테이션을 사용한다.
+- 해당 보안 메소드에 @Secured 어노테이션을 사용한다.
 ```
 @Service
 public class MyService {
