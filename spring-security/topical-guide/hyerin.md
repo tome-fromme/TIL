@@ -290,3 +290,56 @@ public class MyService {
 - @PreAuthorize 및 @PostAuthorize 어노테이션으로 메서드 매개변수 및 반환값에 대한 참조가 포함된 식을 작성 가능
 - 웹 보안과 메소드 보안을 같이 사용하는 것이 드문 일은 아님
 - 필터 체인은 인증 및 로그인 페이지로의 리다이렉션 등과 같은 사용자 경험 기능을 제공하며, 메소드 보안은 보다 세부적인 수준의 보호기능을 제공
+
+## Working with Threads
+- 스프링 시큐리티는 근본적으로 thread bound
+- 현재의 인증된 principal을 다양한 downstream consumer들이 이용할 수 있게 해야하기 때문
+- 기본 빌딩 블록은 Authentication을 포함 할 수 있는 SecurityContext
+- 사용자가 로그인하면 명시적으로 인증된 Authentication이 됨
+- SecurityContextHolder의 정적 메소드를 통해 항상 SecurityContext에 액세스하고 조작할 수 있음
+- SecurityContextHolder는 ThreadLocal
+```
+SecurityContext context = SecurityContextHolder.getContext();
+Authentication authentication = context.getAuthentication();
+assert(authentication.isAuthenticated);
+```
+- 코드에서 이 작업을 하는 것은 일반적이지 않지만, 사용자 정의 인증필터를 작성해야 하는 경우는 유용할 수 있음
+- 웹 엔드포인트에서 현재 인증된 사용자엑 액세스해야하는 경우 @RequestMapping에서 메소드 매개변수로 사용할 수 있음
+
+```
+@RequestMapping("/foo")
+public String foo(@AuthenticationPrincipal User user) {
+  ... // do stuff with user
+}
+```
+- 이 어노테이션은 현재 Authentication을 SEcurityContext에서 꺼내서 getPrincipal() 메소드를 호출하여 메소드 매개변수를 생성
+- Principal의 유형은 인증을 확인하는데 사용되는 AuthenticationManager에 따라 다르므로 사용자 데이타에 대한 type safe 한 참조를 얻는 것이 유용
+- 스프링 시큐리티가 사용중이면, HttpServletReqeust의 Principal은 Authentication 유형이 될 것이므로 직접 사용할 수도 있음
+
+```
+@RequestMapping("/foo")
+public String foo(Principal principal) {
+  Authentication authentication = (Authentication) principal;
+  User = (User) authentication.getPrincipal();
+  ... // do stuff with user
+}
+```
+- 이것은 스프링 시큐리티가 사용되지 않을 때 작동하는 코드를 작성해야 할 때 유용
+- Authentiction 클래스를 로드하는 것에 대해 좀 더 방어해야함
+
+## Processing Secure Methods Asynchronously
+- SecurityContext는 쓰레드 바운드이므로 보안 메서드를 호출하는 백그라운드를 수행하려는 경우 @Async를 사용하면 컨텍스트가 전달되는 시 확인해야 함
+- 이것은 백그라운드에서 실행되는 작업(Runnable, Callable)으로 SecurityContext를 래핑하는 것으로 귀결
+- 스프링 시큐리티는 Runnable과 Callable에 대한 래퍼와 같은 좀 더 쉬운 헬퍼를 제공
+- SecurityContext를 @Async메소드에 전파하려면 AsyncConfigureer를 제공하고 Executor가 올바른 유형인지 확인해야 함
+```
+@Configuration
+public class ApplicationConfiguration extends AsyncConfigurerSupport {
+
+  @Override
+  public Executor getAsyncExecutor() {
+    return new DelegatingSecurityContextExecutorService(Executors.newFixedThreadPool(5));
+  }
+
+}
+```
