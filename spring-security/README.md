@@ -13,20 +13,18 @@ https://leeyongjin.tistory.com/entry/Spring-Security-Basic
 
 ## 학습 목차
 ### preface
-- (각자 학습)
 - [x] 1.Prerequisites
 - [x] 2.Spring Security Community
 - [x] 3.2.What's New in Spring security 5.3(Servlet)
 - [x] 4.3.1.Getting Spring Security(Spring Boot with Gradle)
 - [x] **5.1 Authentication**
 - [x] **5.2 Protection Against Exploits**
-- [x] **6. Project Modules (모듈 종류 훑기)**
+- [x] **6. Project Modules**
 
 ### servlet applications
 - [ ] 8.3 Spring Boot Auto configuration
 
 #### 9. Servlet Security: The Big Picture
-> - (인우 발표)  
 > - [ ] 9.1 A Review of Filters
 > - [ ] 9.2 DelegatingFilterProxy
 > - [ ] 9.3 FilterChainProxy
@@ -35,23 +33,21 @@ https://leeyongjin.tistory.com/entry/Spring-Security-Basic
 > - [ ] 9.6 Handling Security Exceptions 
 
 #### 10. Authentication
-> - (혜찬 발표)  
-> - [x] 10.1 SecurityContextHolder
-> - [x] 10.2 SecurityContext
-> - [x] 10.3 Authentication
-> - [x] 10.4 GrantedAuthority
-> - [x] 10.5 AuthenticationManager
-> - [x] 10.6 ProviderManager
-> - [x] 10.7 AuthenticationProvider
-> - [x] 10.8 Request Credentials with AuthenticationEntryPoint
-> - [x] 10.9 AbstractAuthenticationProcessingFilter
+> - [ ] 10.1 SecurityContextHolder
+> - [ ] 10.2 SecurityContext
+> - [ ] 10.3 Authentication
+> - [ ] 10.4 GrantedAuthority
+> - [ ] 10.5 AuthenticationManager
+> - [ ] 10.6 ProviderManager
+> - [ ] 10.7 AuthenticationProvider
+> - [ ] 10.8 Request Credentials with AuthenticationEntryPoint
+> - [ ] 10.9 AbstractAuthenticationProcessingFilter
 
-> - (혜린 발표)  
-> - [x] 10.10 Username/Password Authentication
-> - [x] 10.11 Session Management
-> - [x] 10.12 Remember-Me Authentication
-> - [x] 10.13 OpenId Support
-> - [x] 10.14 Anonymous Authentication
+> - [ ] 10.10 Username/Password Authentication
+> - [ ] 10.11 Session Management
+> - [ ] 10.12 Remember-Me Authentication
+> - [ ] 10.13 OpenId Support
+> - [ ] 10.14 Anonymous Authentication
 
 > - [ ] 10.15 Pre-Authentication Scenarios
 > - [ ] 10.16 Java Authentication and Authorization Service Provider
