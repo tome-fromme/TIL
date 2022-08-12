@@ -64,4 +64,42 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 - 실제로 애플리케이션이 Spring Security가 특정 요청을 무시하기를 원하는 경우 SecurityFilterChain은 보안 필터가 0일 수 있음
 
 ## 9.5 Security Filters
+- 보안 필터는 SecurityFilterChain API를 사용하여 FilterChainProxy에 삽입됨
+- 필터의 순서가 중요
+- 일반적으로 Spring Security의 필터 순서를 알 필요는 없움. 그러나 순서를 아는 것이 유익한 경우가 있음
+- 스프링 시큐리티 필터의 순서
+  - ChannelProcessingFilter
+  - ConcurrentSessionFilter
+  - WebAsyncManagerIntegrationFilter
+  - SecurityContextPersistenceFilter
+  - HeaderWriterFilter
+  - CorsFilter
+  - CsrfFilter
+  - LogoutFilter
+  - OAuth2AuthorizationRequestRedirectFilter
+  - Saml2WebSsoAuthenticationRequestFilter
+  - X509AuthenticationFilter
+  - AbstractPreAuthenticatedProcessingFilter
+  - CasAuthenticationFilter
+  - OAuth2LoginAuthenticationFilter
+  - Saml2WebSsoAuthenticationFilter
+  - UsernamePasswordAuthenticationFilter
+  - ConcurrentSessionFilter
+  - OpenIDAuthenticationFilter
+  - DefaultLoginPageGeneratingFilter
+  - DefaultLogoutPageGeneratingFilter
+  - DigestAuthenticationFilter
+  - BearerTokenAuthenticationFilter
+  - BasicAuthenticationFilter
+  - RequestCacheAwareFilter
+  - SecurityContextHolderAwareRequestFilter
+  - JaasApiIntegrationFilter
+  - RememberMeAuthenticationFilter
+  - AnonymousAuthenticationFilter
+  - OAuth2AuthorizationCodeGrantFilter
+  - SessionManagementFilter
+  - ExceptionTranslationFilter
+  - FilterSecurityInterceptor
+  - SwitchUserFilter
+
 ## 9.6 Handling Security Exceptions
