@@ -45,5 +45,23 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 <img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/architecture/filterchainproxy.png">
 
 ## 9.4 SecurityFilterChain
+- SecurityFilterChain은 FilterChainProxy에서 요청에 대해 호출해야 하는 Spring 보안 필터를 결정하는 데 사용
+<img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/architecture/securityfilterchain.png">
+- SecurityFilterChain의 보안 필터는 일반적으로 Bean이지만 DelegatingFilterProxy 대신 FilterChainProxy에 등록됨
+- FilterChainProxy는 Servlet 컨테이너 또는 DelegatingFilterProxy에 직접 등록할 때 많은 이점을 제공
+  1. Spring Security의 모든 Servlet 지원을 위한 시작점을 제공. 이러한 이유로 Spring Security의 Servlet 지원 문제를 해결하려는 경우 FilterChainProxy에 디버그 지점을 추가하는 것이 좋음
+  2. 둘째, FilterChainProxy는 Spring Security 사용의 핵심이기 때문에 필수로 여겨지는 작업을 수행할 수 있음. 예를 들어 메모리 누수를 피하기 위해 SecurityContext를 지움. 또한 Spring Security의 HttpFirewall을 적용하여 특정 유형의 공격으로부터 애플리케이션을 보호
+  3. SecurityFilterChain이 호출되어야 하는 시기를 결정할 때 더 많은 유연성을 제공. 서블릿 컨테이너에서 필터는 URL만을 기반으로 호출. 그러나 FilterChainProxy는 RequestMatcher 인터페이스를 활용하여 HttpServletRequest의 모든 항목을 기반으로 호출을 결정할 수 있음
+- FilterChainProxy를 사용하여 사용해야 하는 SecurityFilterChain을 결정할 수 있음. 이를 통해 애플리케이션의 경우 서로 다른 슬라이스에 대해 완전히 별도의 구성을 제공할 수 있음
+<img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/architecture/multi-securityfilterchain.png">
+- 다중 SecurityFilterChain 그림에서 FilterChainProxy는 어떤 SecurityFilterChain을 사용해야 하는지 결정
+- 일치하는 첫 번째 SecurityFilterChain만 호출됨
+- /api/messages/의 URL이 요청되면 먼저 SecurityFilterChain0의 /api/** 패턴과 일치하므로 SecurityFilterChainn에서도 일치하더라도 SecurityFilterChain0만 호출
+- /messages/의 URL이 요청되면 SecurityFilterChain0의 /api/** 패턴과 일치하지 않으므로 FilterChainProxy는 다른 SecurityFilterChain을 계속 시도
+- 매칭되는게 없으면 SecurityFilterChainn 실행
+- SecurityFilterChain0에는 3개의 보안 필터 인스턴스만 구성되어 있음. 그러나 SecurityFilterChainn에는 4개의 보안 필터가 구성되어 있음
+- 각 SecurityFilterChain은 고유하고 별도로 구성될 수 있다는 점에 유의하는 것이 중요
+- 실제로 애플리케이션이 Spring Security가 특정 요청을 무시하기를 원하는 경우 SecurityFilterChain은 보안 필터가 0일 수 있음
+
 ## 9.5 Security Filters
 ## 9.6 Handling Security Exceptions
