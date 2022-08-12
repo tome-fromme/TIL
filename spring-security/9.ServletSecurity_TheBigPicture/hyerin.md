@@ -39,6 +39,11 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 - 그러나 Spring은 일반적으로 ContextLoaderListener를 사용하여 Filter 인스턴스를 등록해야 할 때까지 수행되지 않는 Spring Bean을 로드
 
 ## 9.3 FilterChainProxy
+- Spring Security의 Servlet 지원은 FilterChainProxy에 포함되어 있음
+- FilterChainProxy는 SecurityFilterChain을 통해 여러 Filter 인스턴스에 위임을 허용하는 Spring Security에서 제공하는 특별한 Filter
+- FilterChainProxy는 Bean이므로 일반적으로 DelegatingFilterProxy에 래핑됨
+<img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/architecture/filterchainproxy.png">
+
 ## 9.4 SecurityFilterChain
 ## 9.5 Security Filters
 ## 9.6 Handling Security Exceptions
