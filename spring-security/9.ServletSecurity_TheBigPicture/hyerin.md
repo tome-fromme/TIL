@@ -103,3 +103,29 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
   - SwitchUserFilter
 
 ## 9.6 Handling Security Exceptions
+- ExceptionTranslationFilter를 사용하면 AccessDeniedException 및 AuthenticationException을 HTTP 응답으로 변환할 수 있음
+- ExceptionTranslationFilter는 보안 필터 중 하나로 FilterChainProxy에 삽입됨
+<img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/architecture/exceptiontranslationfilter.png">
+1. 먼저 ExceptionTranslationFilter가 FilterChain.doFilter(request, response)를 호출하여 나머지 애플리케이션을 호출
+2. 사용자가 인증되지 않았거나 AuthenticationException인 경우 인증을 시작
+   1. SecurityContextHolder를 비움
+   2. HttpServletRequest는 RequestCache에 저장됨. 사용자가 성공적으로 인증되면 RequestCache를 사용하여 원래 요청 이어감
+   3. AuthenticationEntryPoint는 클라이언트에서 자격 증명을 요청하는 데 사용. 예를 들어 로그인 페이지로 리다이렉트하거나 WWW-Authenticate 헤더를 전송
+3. AccessDeniedException인 경우 액세스가 거부. AccessDeniedHandler는 액세스 거부를 처리하기 위해 호출됨
+> 어플리케이션이 AccessDeniedException 또는 AuthenticationException을 throw하지 않으면 ExceptionTranslationFilter는 아무 작업도 수행하지 않음
+````
+// ExceptionTranslationFilter 슈도코드
+
+try {
+    filterChain.doFilter(request, response); // (1)
+} catch (AccessDeniedException | AuthenticationException e) {
+    if (!authenticated || e instanceof AuthenticationException) {
+        startAuthentication(); // (2)
+    } else {
+        accessDenied(); // (3)
+    }
+}
+````
+1. FilterChain.doFilter(request, response)를 호출하는 것은 나머지 애플리케이션을 호출하는 것과 동일. 즉, 어플리케이션의 다른 부분(예: FilterSecurityInterceptor 또는 메서드 시큐리티)이 AuthenticationException 또는 AccessDeniedException을 throw하면 여기에서 예외처리
+2. 사용자가 인증되지 않았거나 AuthenticationException인 경우 인증을 시작
+3. 그렇지 않으면 액세스 거부
