@@ -48,9 +48,29 @@ SecurityContextHolder.setContext(context); // (3)
 - AuthenticationManager 구현체는 어떤 것을 사용해도 상관 없지만, 가장 많이 사용하는 구현체는 ProviderManager
 
 # 10.6. ProviderManager
+- 가장 많이 쓰는 AuthenticationManager 구현체
+- 동작을 AuthenticationProvider list에 위임함
+- 모든 AuthenticationProvider는 인증을 성공시키거나 실피시키거나 아니면 결정을 내릴 수 없는 것으로 판단하고
+다운 스트림에 있는 AuthenticationProvider가 결정하도록 만들 수 있음
+- 설정해둔 AuthenticationProvider가 전부 인증하지 못하면 ProviderNotFounderException과 함께 실패함
+- 이 예외는 AuthenticationProvider의 하위클래스로 넘겨진 Authentication 유형을 지원하는 ProviderManager를 설정하지 않았음을 의미
 <img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/authentication/architecture/providermanager.png">
-<img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/authentication/architecture/providermanager-parent.png">
-<img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/authentication/architecture/providermanagers-parent.png">
+- 보통은 AuthenticationProvider마다 각자가 맡은 인증을 수행하는 법을 알고 있음
+- ex) AuthenticationProvider 하나로 이름/비밀번호를 검증할 수 있고 다른 하나는 SAML 인증을 담당할 수 있음. 
+이렇게 하면 인증 유형마다 AuthenticationProvider가 있기 때문에 AuthenticationProvider 빈 하나만 외부로 노출하면서도 여러 인증 유형을 지원할 수 있음
+  - SAML(Security Assertion Markup Language), 보안 검증 마크업 언어: ID 제공자(IdP)가 사용자를 인증한 다음 SP(서비스 제공자)라고 하는 다른 애플리케이션에 인증 토큰을 전달할 수 있는 공개 통합 표준
+- 원한다면 ProviderManager에 인증을 수행할 수 있는 AuthenticationProvider가 없을 때 사용할 부모 AuthenticationManager를 설정할 수 있음
+- 부모는 AuthenticationManager의 어떤 구현체도 될 수 있지만 보통 ProviderManager 인스턴스를 많이 사용
+  <img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/authentication/architecture/providermanager-parent.png">
+- 여러 ProviderManager 인스턴스에 동일한 부모 AuthenticationManager를 공유하는 것도 가능
+- 각각 인증 메커니즘이 다름 (ProviderManager 인스턴스가 다름) SecurityFilterChain 여러 개가 공통 인증을 사용하는 경우(부모 AuthenticationManager를 공유) 흔히 쓰는 패턴
+  <img src="https://docs.spring.io/spring-security/site/docs/5.3.2.RELEASE/reference/html5/images/servlet/authentication/architecture/providermanagers-parent.png">
+- 기본적으로 ProviderManager는 인증에 성공하면 반환받은 Authentication 객체에 있는 모든 민감한 credential 정보를 지움
+- Authentication이 캐시 안에 있는 객체를 참조하는데 (UserDetails 인스턴스 등) credential을 제거한다면 캐시된 값으로는 더이상 인증할 수 없음. 
+  - 캐시를 사용한다면 이 점 반드시 고려할 것
+  - 캐시 구현부나 Authentication 객체를 생성하는 AuthenticationProvider에서 객체의 복사본을 만들면 해결
+  - ProviderManager의 eraseCredentialsAfterAuthentication 프로퍼티를 비활성화시켜도 됨
+  - 참고: https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/authentication/ProviderManager.html
 
 # 10.7. AuthenticationProvider
 - 여러개의 AuthenticationProvider는 ProviderManager에 주입될 수 있음
