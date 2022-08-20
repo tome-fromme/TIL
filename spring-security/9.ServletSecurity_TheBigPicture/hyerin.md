@@ -8,6 +8,7 @@
 - 두 개 이상의 필터를 사용하여 다음을 수행할 수 있음
   - 다운스트림 필터 또는 서블릿이 호출되지 않도록 함. 이 경우 필터는 일반적으로 HttpServletResponse를 작성
   - 다운스트림 필터 및 서블릿에서 사용하는 HttpServletRequest 또는 HttpServletResponse 수정
+
 ````
 public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
     // 나머지 응용 프로그램보다 먼저 수행
@@ -24,6 +25,8 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 - DelegatingFilterProxy는 표준 서블릿 컨테이너 메커니즘을 통해 등록할 수 있지만 모든 작업을 Filter를 구현하는 Spring Bean에 위임
 <img src="https://godekdls.github.io/images/springsecurity/delegatingfilterproxy.png">
 - DelegatingFilterProxy는 ApplicationContext에서 Bean Filter0을 찾은 다음 Bean Filter0을 호출
+
+
 ````
 // DelegatingFilterProxy 슈도코드
 public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
@@ -113,6 +116,8 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
    3. AuthenticationEntryPoint는 클라이언트에서 자격 증명을 요청하는 데 사용. 예를 들어 로그인 페이지로 리다이렉트하거나 WWW-Authenticate 헤더를 전송
 3. AccessDeniedException인 경우 액세스가 거부. AccessDeniedHandler는 액세스 거부를 처리하기 위해 호출됨
 > 어플리케이션이 AccessDeniedException 또는 AuthenticationException을 throw하지 않으면 ExceptionTranslationFilter는 아무 작업도 수행하지 않음
+
+
 ````
 // ExceptionTranslationFilter 슈도코드
 
