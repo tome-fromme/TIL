@@ -4,15 +4,16 @@
 - 스프링 시큐리티로 인증한 사용자의 상세 정보 저장
 - SecurityContextHolder에 어떻게 값을 넣는지는 상관하지 않음. 값이 있다면 현재 인증된 사용자 정보로 사용
 - 사용자가 인증됐음을 나타내는 가장 쉬운 방법은 SecurityContextHolder를 직접 설정하는 것
-````
-// SecurityContextHolder 설정
+
+```
+SecurityContextHolder 설정
 SecurityContext context = SecurityContextHolder.createEmptyContext(); // (1)
 Authentication authentication =
     new TestingAuthenticationToken("username", "password", "ROLE_USER"); // (2)
 context.setAuthentication(authentication);
 
 SecurityContextHolder.setContext(context); // (3)
-````
+```
 1. 비어있는 SecurityContext 생성. 멀티스레드 경쟁상태를 피하기 위해서는
    SecurityContextHolder.getContext().setAuthentication(authentication) 를 사용하면 안되고 새로운 SecurityContext 인스턴스를 생성해야 함
 2. 새로운 Authentication 객체 생성. Authentication 구현체라면 모두 SecurityContext를 담을 수 있음
